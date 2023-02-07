@@ -6,12 +6,12 @@
           type="text"
           :value="textField1"
           :maxLength="5"
-          @input="fieldInput1"
+          @keypress="fieldInput1"
           placeholder="input1"
       />
       <my-input
           class="myinput"
-          type="text"
+          type="string"
           :maxLength="5"
           :value="textField2"
           @input="fieldInput2"
@@ -74,6 +74,12 @@
         />
         <div>Open</div>
       </div>
+      <button
+          class="confirmButton"
+          @click="confirmButtonClicked"
+      >
+        Отправить
+      </button>
     </form>
   </div>
 </template>
@@ -83,9 +89,15 @@ import {defineComponent} from 'vue'
 import MyInput from "@/components/MyInput.vue";
 import MySelect from "@/components/MySelect.vue";
 import Toggle from '@vueform/toggle'
+
 interface options {
   title: string,
   name: string,
+}
+
+interface form {
+  input1: string,
+  input2: Number,
 }
 
 export default defineComponent({
@@ -132,6 +144,9 @@ export default defineComponent({
         this.counter -= 1
       }
     },
+    confirmButtonClicked() {
+
+    },
   }
 })
 </script>
@@ -155,7 +170,7 @@ export default defineComponent({
 
 .form {
   width: 40%;
-  height: 26%;
+  height: 29%;
   display: flex;
   padding: 20px 30px;
   flex-direction: column;
@@ -206,6 +221,12 @@ export default defineComponent({
 .toggleContainer {
   display: flex;
   align-items: center;
+}
+
+.confirmButton {
+  padding: 10px;
+  position: relative;
+  margin-top: auto;
 }
 
 </style>
