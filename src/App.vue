@@ -2,28 +2,32 @@
   <div class="app">
     <form @submit.prevent class="form">
       <my-input
+          class="myinput"
           type="text"
           :value="textField1"
+          :maxLength="5"
           @input="fieldInput1"
           placeholder="input1"
       />
       <my-input
+          class="myinput"
           type="text"
+          :maxLength="5"
           :value="textField2"
           @input="fieldInput2"
           placeholder="input2"
       />
       <my-input
+          class="myinput"
           type="text"
           :value="textField3"
           @input="fieldInput3"
           placeholder="input3"
       />
-      <my-input
-          type="text"
-          :value="textField4"
-          @input="fieldInput4"
-          placeholder="input4"
+      <my-select
+          style="margin-top: 10px"
+          v-model="selectedOption"
+          :options="options"
       />
       <div class="counter">
         <div
@@ -46,20 +50,30 @@
           </button>
         </div>
       </div>
-      <my-input
-          v-show="counter > 5"
-          type="text"
-          :value="textField5"
-          @input="fieldInput5"
-          placeholder="input5"
-      />
-      <my-input
-          v-show="counter > 5"
-          type="text"
-          :value="textField6"
-          @input="fieldInput6"
-          placeholder="input6"
-      />
+      <div
+          class="checkboxContainer"
+          v-if="counter > 5"
+      >
+        <my-input
+            type="checkbox"
+            :checked="checkbox"
+            @input="fieldInput5"
+        />
+        <div class="checkBoxName">
+          privileged
+        </div>
+      </div>
+      <div
+          class="toggleContainer"
+           v-if="counter > 5"
+      >
+        <div>Close</div>
+        <Toggle
+            style="padding: 10px"
+            v-model="toggle"
+        />
+        <div>Open</div>
+      </div>
     </form>
   </div>
 </template>
@@ -67,10 +81,16 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import MyInput from "@/components/MyInput.vue";
+import MySelect from "@/components/MySelect.vue";
+import Toggle from '@vueform/toggle'
+interface options {
+  title: string,
+  name: string,
+}
 
 export default defineComponent({
   name: 'app',
-  components: {MyInput},
+  components: {MySelect, MyInput, Toggle},
   data() {
     return {
       textField1: '',
@@ -78,13 +98,20 @@ export default defineComponent({
       textField3: '',
       textField4: '',
       counter: 0,
-      textField5: '',
-      textField6: '',
+      checkbox: false,
+      toggle: true,
+      selectedOption: '',
+      options: [
+        {title: 'Option1', name: 'Опция 1'} as options,
+        {title: 'Option2', name: 'Опция 2'} as options,
+      ],
     }
   },
   methods: {
     fieldInput1(e: { target: { value: string } }) {
-      this.textField1 = e.target.value
+      if (e.target.value.length <= 5) {
+        this.textField1 = e.target.value
+      }
     },
     fieldInput2(e: { target: { value: string } }) {
       this.textField2 = e.target.value
@@ -92,17 +119,11 @@ export default defineComponent({
     fieldInput3(e: { target: { value: string } }) {
       this.textField3 = e.target.value
     },
-    fieldInput4(e: { target: { value: string } }) {
-      this.textField4 = e.target.value
-    },
-    fieldInput5(e: { target: { value: string } }) {
-      this.textField4 = e.target.value
-    },
-    fieldInput6(e: { target: { value: string } }) {
-      this.textField4 = e.target.value
+    fieldInput5() {
+      this.checkbox = !this.checkbox
     },
     increaseCounter() {
-      if(this.counter < 10) {
+      if (this.counter < 10) {
         this.counter += 1
       }
     },
@@ -115,7 +136,9 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style src="@vueform/toggle/themes/default.css"></style>
+
+<style >
 * {
   margin: 0;
   padding: 0;
@@ -132,16 +155,19 @@ export default defineComponent({
 
 .form {
   width: 40%;
-  height: 30%;
+  height: 26%;
   display: flex;
+  padding: 20px 30px;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  border: 2px solid teal;
+  border-radius: 2vw;
 }
 
 .counter {
   display: flex;
   padding: 10px 20px;
+  margin-top: 10px;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 2vw;
   border: 2px solid black;
@@ -158,8 +184,28 @@ export default defineComponent({
   height: 2vh;
 }
 
+.myinput {
+  margin-top: 10px;
+}
+
 .counterValue {
   font-size: 30px;
+}
+
+.checkboxContainer {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkBoxName {
+  margin-left: 10px
+}
+
+.toggleContainer {
+  display: flex;
+  align-items: center;
 }
 
 </style>
