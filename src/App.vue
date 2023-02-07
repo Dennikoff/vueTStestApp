@@ -5,7 +5,7 @@
           class="myinput"
           type="text"
           :value="textField1"
-          :maxLength="5"
+          :maxLength="10"
           @keypress="fieldInput1"
           placeholder="input1"
       />
@@ -95,9 +95,33 @@ interface options {
   name: string,
 }
 
-interface form {
+interface formInputs {
   input1: string,
-  input2: Number,
+  input2: string,
+  input3: string,
+  input4: string,
+  counter: number,
+  privileged?: boolean,
+  input6?: string,
+
+}
+
+function validate(inp1: string, inp2:string, inp3:string):boolean {
+  const regex1: RegExp = /[a-zA-Z]{1,5}/
+  if (regex1.test(inp1)) {
+    let string = inp1.replace(regex1, '')
+    if(string != "") {
+      return false
+    }
+  }
+  const regex2: RegExp = /[0-9]{3,5}/
+  if (regex2.test(inp2)) {
+    let string = inp2.replace(regex2, '')
+    if(string != "") {
+      return false
+    }
+  }
+  return false
 }
 
 export default defineComponent({
@@ -120,32 +144,45 @@ export default defineComponent({
     }
   },
   methods: {
-    fieldInput1(e: { target: { value: string } }) {
+    fieldInput1(e: { target: { value: string } }):void {
       if (e.target.value.length <= 5) {
         this.textField1 = e.target.value
       }
     },
-    fieldInput2(e: { target: { value: string } }) {
+    fieldInput2(e: { target: { value: string } }):void {
       this.textField2 = e.target.value
     },
-    fieldInput3(e: { target: { value: string } }) {
+    fieldInput3(e: { target: { value: string } }):void {
       this.textField3 = e.target.value
     },
-    fieldInput5() {
+    fieldInput5():void {
       this.checkbox = !this.checkbox
     },
-    increaseCounter() {
+    increaseCounter():void {
       if (this.counter < 10) {
         this.counter += 1
       }
     },
-    decreaseCounter() {
+    decreaseCounter():void {
       if (this.counter > 0) {
         this.counter -= 1
       }
     },
-    confirmButtonClicked() {
+    confirmButtonClicked():void {
+      if(this.counter < 5) {
+        if(!validate(this.textField1, this.textField2, this.textField3)) {
+          return
+        }
+        let tempObject: formInputs = {
+          input1: this.textField1,
+          input2: this.textField2,
+          input3: this.textField3,
+          input4: this.textField4,
+          counter: this.counter,
+        }
+      } else {
 
+      }
     },
   }
 })
