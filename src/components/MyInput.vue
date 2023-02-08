@@ -23,8 +23,11 @@ export default defineComponent({
   methods: {
     updateInput(event: {target: {value: string}}) {
       this.$emit('update:value', event.target.value)
+    },
+    changeInput(event: any) {
+      console.log(event)
     }
-  }
+  },
 
 })
 </script>

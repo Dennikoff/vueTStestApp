@@ -4,25 +4,25 @@
       <my-input
           class="myinput"
           type="text"
-          :value="textField1"
+          v-model:value="textField1"
           :maxLength="10"
-          @keypress="fieldInput1"
-          placeholder="input1"
+          @input="fieldInput1"
+          placeholder="letters"
       />
       <my-input
           class="myinput"
           type="string"
           :maxLength="5"
-          :value="textField2"
+          v-model:value="textField2"
           @input="fieldInput2"
-          placeholder="input2"
+          placeholder="numbers"
       />
       <my-input
           class="myinput"
-          type="text"
-          :value="textField3"
+          type="email"
+          v-model:value="textField3"
           @input="fieldInput3"
-          placeholder="input3"
+          placeholder="email"
       />
       <my-select
           style="margin-top: 10px"
@@ -89,39 +89,31 @@ import {defineComponent} from 'vue'
 import MyInput from "@/components/MyInput.vue";
 import MySelect from "@/components/MySelect.vue";
 import Toggle from '@vueform/toggle'
+import {makeRequest} from "@/api/sendForm";
 
 interface options {
   title: string,
   name: string,
 }
 
-interface formInputs {
-  input1: string,
-  input2: string,
-  input3: string,
-  input4: string,
-  counter: number,
-  privileged?: boolean,
-  input6?: string,
-
-}
-
-function validate(inp1: string, inp2:string, inp3:string):boolean {
-  const regex1: RegExp = /[a-zA-Z]{1,5}/
-  if (regex1.test(inp1)) {
-    let string = inp1.replace(regex1, '')
-    if(string != "") {
-      return false
-    }
+function validate(inp1: string, inp2:string, inp3:string):[boolean, string] {
+  const regex1: RegExp = /^[a-zA-Z]{1,5}$/
+  console.log(inp1)
+  if (!regex1.test(inp1)) {
+    return [false, 'input 1 incorrect, type 1-5 letters']
   }
-  const regex2: RegExp = /[0-9]{3,5}/
-  if (regex2.test(inp2)) {
-    let string = inp2.replace(regex2, '')
-    if(string != "") {
-      return false
-    }
+  console.log(inp2)
+  const regex2: RegExp = /^\d{3,5}$/
+  if (!regex2.test(inp2)) {
+    return [false, 'input 2 incorrect, type 3-5 digits']
   }
-  return false
+  console.log(inp3)
+  const regex3: RegExp = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
+  if (!regex3.test(inp3)) {
+    return [false, 'input 3 incorrect type email']
+  }
+  return [true, '']
+
 }
 
 export default defineComponent({
@@ -145,9 +137,7 @@ export default defineComponent({
   },
   methods: {
     fieldInput1(e: { target: { value: string } }):void {
-      if (e.target.value.length <= 5) {
         this.textField1 = e.target.value
-      }
     },
     fieldInput2(e: { target: { value: string } }):void {
       this.textField2 = e.target.value
@@ -169,20 +159,42 @@ export default defineComponent({
       }
     },
     confirmButtonClicked():void {
-      if(this.counter < 5) {
-        if(!validate(this.textField1, this.textField2, this.textField3)) {
+      let tempObject: formInputs
+      if(this.counter <= 5) {
+        let [flag, msg]: [boolean, string] = validate(this.textField1, this.textField2, this.textField3)
+        if(!flag) {
+          alert(msg)
           return
+        } else {
+          console.log('input is correct')
         }
-        let tempObject: formInputs = {
+        tempObject = {
           input1: this.textField1,
           input2: this.textField2,
           input3: this.textField3,
-          input4: this.textField4,
+          input4: this.selectedOption,
           counter: this.counter,
         }
       } else {
-
+        let [flag, msg]: [boolean, string] = validate(this.textField1, this.textField2, this.textField3)
+        if(!flag) {
+          alert(msg)
+          return
+        } else {
+          console.log('input is correct')
+        }
+        tempObject = {
+          input1: this.textField1,
+          input2: this.textField2,
+          input3: this.textField3,
+          input4: this.selectedOption,
+          counter: this.counter,
+          privileged: this.checkbox,
+          input6: this.toggle ? 'Open': 'Close',
+        }
       }
+      const response: any = makeRequest(tempObject)
+      console.log(response)
     },
   }
 })
@@ -207,7 +219,8 @@ export default defineComponent({
 
 .form {
   width: 40%;
-  height: 29%;
+  max-width: 380px;
+  height: 380px;
   display: flex;
   padding: 20px 30px;
   flex-direction: column;
@@ -221,7 +234,7 @@ export default defineComponent({
   padding: 10px 20px;
   margin-top: 10px;
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 2vw;
+  border-radius: 2vh;
   border: 2px solid black;
 }
 
@@ -233,7 +246,7 @@ export default defineComponent({
 
 .btn {
   width: 3vw;
-  height: 2vh;
+  height: 20px;
 }
 
 .myinput {
@@ -262,7 +275,6 @@ export default defineComponent({
 
 .confirmButton {
   padding: 10px;
-  position: relative;
   margin-top: auto;
 }
 
