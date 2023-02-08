@@ -5,7 +5,7 @@
           class="myinput"
           type="text"
           v-model:value="textField1"
-          :maxLength="10"
+          :maxLength="5"
           @input="fieldInput1"
           placeholder="letters"
       />
@@ -194,12 +194,8 @@ export default defineComponent({
         }
       }
       const response: any = makeRequest(tempObject)
-      response.then(
-          (result: any) => console.log('then ok', result)
-      ).catch(
-          (error: any) => console.log('catch err', error)
-      )
-      console.log('response', response)
+      console.log(response)
+
     },
   }
 })
@@ -212,6 +208,20 @@ export default defineComponent({
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "NotoSans-Regular";
+}
+
+@font-face {
+  font-family: "NotoSans-Regular";
+  src: url("@/font/NotoSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+
+@font-face {
+  font-family: "NotoSans-Bold";
+  src: url("@/font/NotoSans-Bold.ttf") format("truetype");
+  font-weight: 700;
 }
 
 .app {
@@ -224,8 +234,8 @@ export default defineComponent({
 
 .form {
   width: 40%;
-  max-width: 380px;
-  height: 380px;
+  max-width: 400px;
+  height: 400px;
   display: flex;
   padding: 20px 30px;
   flex-direction: column;
