@@ -121,9 +121,9 @@ export default defineComponent({
   components: {MySelect, MyInput, Toggle},
   data() {
     return {
-      textField1: '',
-      textField2: '',
-      textField3: '',
+      textField1: 'abc',
+      textField2: '123',
+      textField3: 'd.harke@yandex.ru',
       textField4: '',
       counter: 0,
       checkbox: false,
@@ -194,7 +194,12 @@ export default defineComponent({
         }
       }
       const response: any = makeRequest(tempObject)
-      console.log(response)
+      response.then(
+          (result: any) => console.log('then ok', result)
+      ).catch(
+          (error: any) => console.log('catch err', error)
+      )
+      console.log('response', response)
     },
   }
 })
