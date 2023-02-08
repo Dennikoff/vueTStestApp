@@ -193,9 +193,7 @@ export default defineComponent({
           input6: this.toggle ? 'Open': 'Close',
         }
       }
-      const response: any = makeRequest(tempObject)
-      console.log(response)
-
+      makeRequest(tempObject)
     },
   }
 })
